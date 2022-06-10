@@ -7,9 +7,8 @@ int main()
     srand(time(NULL));
     sf::RenderWindow window(sf::VideoMode(1280, 720), "Game");
     window.setFramerateLimit(60);
-    window.setVerticalSyncEnabled(true);
-    window.setKeyRepeatEnabled(false);
-
+    window.setVerticalSyncEnabled(true);//Activating vertical synchronization will limit the number of frames displayed to the refresh rate of the monitor(limit the framerate to a good value)
+    window.setKeyRepeatEnabled(false);// If it is disabled, you will only get a single event when the key is pressed.
 
     sf::Texture texture;
     if (!(texture.loadFromFile("subzero-idle.png")))
