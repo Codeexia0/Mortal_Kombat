@@ -3,7 +3,7 @@
 #include <vector>
 #include <cmath>
 #include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>s
 
 
 int main() {
@@ -18,7 +18,7 @@ int main() {
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            // "close requested" event: we close the window
+            // "close requested" event: we close the winow
             if (event.type == sf::Event::Closed)
                 window.close();
 
