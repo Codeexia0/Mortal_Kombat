@@ -11,8 +11,8 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-        animation.cpp \
         main.cpp
 
 HEADERS += \
-    animation.h
+    Animation.h \
+    Global.h
