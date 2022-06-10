@@ -1,36 +1,59 @@
-#include <iostream>
-#include <memory>
-#include <vector>
-#include <cmath>
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>s
+#include<SFML/Graphics.hpp>
+#include<iostream>
+using namespace std;
+
+int main()
+{
+    srand(time(NULL));
+    sf::RenderWindow window(sf::VideoMode(1280, 720), "Game");
+    window.setFramerateLimit(60);
+    window.setVerticalSyncEnabled(true);
+    window.setKeyRepeatEnabled(false);
 
 
-int main() {
+    sf::Texture texture;
+    if (!(texture.loadFromFile("subzero-idle.png")))
+    {
+        cout << "Could Not Load File.." << endl;
+    }
+    sf::Sprite _sprite;
+    _sprite.setTexture(texture);
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
+    _sprite.setTextureRect(sf::IntRect(48, 0, 48, 111));
 
-    sf::Clock clock;
-
-    while (window.isOpen()) {
-
-        sf::Time elapsed = clock.restart();
-
+    while (window.isOpen())
+    {
         sf::Event event;
-        while (window.pollEvent(event)) {
-            // "close requested" event: we close the winow
+        while (window.pollEvent(event))
+        {
             if (event.type == sf::Event::Closed)
                 window.close();
 
+            //If key is pressed
+            if (event.type == sf::Event::KeyPressed)
+            {
+                switch (event.key.code)
+                {
+                case sf::Keyboard::D:
+                    break;
+                }
+            }
+
+            if (event.type == sf::Event::KeyReleased)
+            {
+                switch (event.key.code)
+                {
+                default: break;
+                }
+            }
+
         }
 
-        window.clear(sf::Color::Black);
 
-        // draw everything here...
-
-        // end the current frame
+        //Clear window and draw new
+        window.clear( sf::Color(77,77,77));
+        window.draw(_sprite);
         window.display();
     }
-
     return 0;
 }
