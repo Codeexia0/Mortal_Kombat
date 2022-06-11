@@ -20,7 +20,6 @@ class Animation {
 
     bool loop = false;
 public:
-    sf::RenderWindow *window;
 
     Animation(string id,string filePath,Vector2i size,int maxFrame,float delayTime= 0.1f,bool loop = true) {
 
@@ -65,6 +64,10 @@ public:
 
     void setPosition(Vector2f pos) {
         sprite.setPosition(pos);
+    }
+
+    void setScale(Vector2f scale) {
+        sprite.setScale(scale);
     }
 
     void draw() {
