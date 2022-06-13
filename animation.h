@@ -73,5 +73,4 @@ public:
     void draw() {
         window->draw(sprite);
     }
-
 };
