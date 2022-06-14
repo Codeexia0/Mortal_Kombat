@@ -13,8 +13,22 @@ int main()
     window->setVerticalSyncEnabled(true);
     window->setKeyRepeatEnabled(false);
 
-    Player player(Vector2f(200, 230));
 
+    sf::Font font;
+    if (!font.loadFromFile("tahoma.ttf"))
+    {
+        cout << " load font error\n";
+    }
+
+
+    Animation backgroundAnimation("background", "bg.png", Vector2i(799, 233), 3, 0.07f);
+    backgroundAnimation.setScale(Vector2f(1.0f, 1.5f));
+
+    Player player(Vector2f(200, 230));
+    Player player2(Vector2f(600, 230),true);
+
+    player.setEnemy(&player2);
+    player2.setEnemy(&player);
 
 
     sf::Clock deltaClock;
@@ -31,30 +45,30 @@ int main()
             //If key is pressed
             if (event.type == sf::Event::KeyPressed)
             {
-                switch (event.key.code)
-                {
-                case sf::Keyboard::D:
-                    break;
-                }
+                player.onKeyPress(event.key.code);
+                player2.onKeyPress(event.key.code);
             }
-
-            if (event.type == sf::Event::KeyReleased)
-            {
-                switch (event.key.code)
-                {
-                default: break;
-                }
+            if (event.type == sf::Event::KeyReleased) {
+                player.onKeyRelease(event.key.code);
+                player2.onKeyRelease(event.key.code);
             }
-
         }
 
 
         //Clear window and draw new
         window->clear( sf::Color(77,77,77));
 
-        player.update(deltaTime);
-        player.draw();
 
+        backgroundAnimation.play(deltaTime);
+        backgroundAnimation.draw();
+
+
+        player.update(deltaTime);
+        player2.update(deltaTime);
+
+
+        player.draw();
+        player2.draw();
 
 
         window->display();

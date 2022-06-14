@@ -8,60 +8,220 @@ class Player {
     map<string, Animation*> animations;
 
     Vector2f position;
+    Vector2f velocity;
 
-    enum Action //user-defined data type that can be assigned some limited values
+    enum Action
     {
         idle,
+        walk,
         punch
     };
 
     Action action;
 
+    float speed = 5;
+    bool isPlayer2 = false;
+
+    Player* enemy;
+
 public:
-    Player(Vector2f position,bool flip = false) {
+    Player(Vector2f position,bool isPlayer2 = false) {
         this->position = position;
-
-        Animation* idle = new Animation("idle", "subzero-idle.png", Vector2i(48, 111), 12, 0.05f);
-        Animation* punch = new Animation("punch", "subzero-punch1.png", Vector2i(80, 109), 3, 0.07f, false);
-        animations.insert(pair<string, Animation*>("idle", idle));
-        animations.insert(pair<string, Animation*>("punch", punch));
-
+        velocity = Vector2f(0, 0);
         action = Action::idle;
+        this->isPlayer2 = isPlayer2;
+
+
+        if (!isPlayer2) {
+            Animation* idle = new Animation("idle", "subzero-idle.png", Vector2i(48, 111), 7, 0.05f);
+            Animation* walk = new Animation("walk", "subzero-walk.png", Vector2i(64, 109), 9, 0.05f);
+            Animation* punch = new Animation("punch", "subzero-punch1.png", Vector2i(80, 109), 3, 0.07f, false);
+            animations.insert(pair<string, Animation*>("idle", idle));
+            animations.insert(pair<string, Animation*>("walk", walk));
+            animations.insert(pair<string, Animation*>("punch", punch));
+        }
+        else {
+            Animation* idle = new Animation("idle", "sco-idle.png", Vector2i(64, 111), 7, 0.07f);
+            Animation* walk = new Animation("walk", "sco-walk.png", Vector2i(64, 109), 9, 0.05f);
+            Animation* punch = new Animation("punch", "sco-punch1.png", Vector2i(80, 109), 3, 0.07f, false);
+
+            idle->setScale(Vector2f(-1, 1));
+            walk->setScale(Vector2f(-1, 1));
+            punch->setScale(Vector2f(-1, 1));
+
+            animations.insert(pair<string, Animation*>("idle", idle));
+            animations.insert(pair<string, Animation*>("walk", walk));
+            animations.insert(pair<string, Animation*>("punch", punch));
+        }
     }
 
+    void setEnemy(Player* enemy) {
+        this->enemy = enemy;
+    }
+
+    void onKeyPress(Keyboard::Key key) {
+
+        if (!isPlayer2) {
+            switch (key)
+            {
+            case sf::Keyboard::A:
+                velocity.x = -speed;
+                action = walk;
+                break;
+            case sf::Keyboard::D:
+                velocity.x = speed;
+                action = walk;
+                break;
+            case sf::Keyboard::F:
+                action = punch;
+                animations.at("punch")->replay();
+                break;
+            }
+        }
+        else {
+            switch (key)
+            {
+            case sf::Keyboard::Left:
+                velocity.x = -speed;
+                action = walk;
+                break;
+            case sf::Keyboard::Right:
+                velocity.x = speed;
+                action = walk;
+                break;
+            case sf::Keyboard::RControl:
+                action = punch;
+                animations.at("punch")->replay();
+                break;
+            }
+        }
+
+    }
+
+    void onKeyRelease(Keyboard::Key key) {
+
+        if (!isPlayer2) {
+            switch (key)
+            {
+            case sf::Keyboard::A:
+                if (velocity.x == -speed) {
+                    velocity.x = 0;
+                    action = idle;
+                }
+                break;
+            case sf::Keyboard::D:
+                if (velocity.x == speed) {
+                    velocity.x = 0;
+                    action = idle;
+                }
+                break;
+            }
+        }
+        else {
+            switch (key)
+            {
+            case sf::Keyboard::Left:
+                if (velocity.x == -speed) {
+                    velocity.x = 0;
+                    action = idle;
+                }
+                break;
+            case sf::Keyboard::Right:
+                if (velocity.x == speed) {
+                    velocity.x = 0;
+                    action = idle;
+                }
+                break;
+            }
+        }
+
+    }
+
+    void movement() {
+        float touchDistance = 110;
+        if (!isPlayer2) {
+            if (velocity.x > 0 && distance(position.x, position.y, enemy->getPos().x, enemy->getPos().y) >= touchDistance) {
+                position += velocity;
+            }
+            else if (velocity.x < 0) {
+                position += velocity;
+                if (position.x <= 10) {
+                    position.x = 0;
+                }
+            }
+        }
+        else {
+            if (velocity.x > 0 ) {
+                position += velocity;
+                if (position.x >= 800) {
+                    position.x = 800;
+                }
+            }
+            else if (velocity.x < 0 && distance(position.x, position.y, enemy->getPos().x, enemy->getPos().y) >= touchDistance) {
+                position += velocity;
+
+            }
+        }
+    }
+
+
     void update(float deltaTime) {
-        /*map<string, Animation*>::iterator itr;
-        for (itr = animations.begin(); itr != animations.end(); itr++) {
-            itr->second->setPosition(position);
-            itr->second->play(deltaTime);
-        }*/
+
+        movement();
 
         switch (action)
         {
-        case Player::idle:
-            animations.at("idle")->setPosition(position);
+        case Action::idle:
             animations.at("idle")->play(deltaTime);
             break;
-        case Player::punch:
-            animations.at("punch")->setPosition(position);
+        case Action::walk:
+            animations.at("walk")->play(deltaTime);
+            break;
+        case Action::punch:
             animations.at("punch")->play(deltaTime);
+
+            if (animations.at("punch")->isEnd()) {
+                action = Action::idle;
+            }
+
             break;
         }
 
     }
+
+
+    void checkDistance() {
+
+    }
+
+
 
     void draw() {
 
         switch (action)
         {
-        case Player::idle:
+        case Action::idle:
+            animations.at("idle")->setPosition(position);
+
             animations.at("idle")->draw();
             break;
-        case Player::punch:
+        case Action::walk:
+            animations.at("walk")->setPosition(position);
+            animations.at("walk")->draw();
+            break;
+        case Action::punch:
+            animations.at("punch")->setPosition(position);
             animations.at("punch")->draw();
             break;
         }
 
     }
+
+
+    Vector2f getPos() {
+        return position;
+    }
+
+
 
 };
