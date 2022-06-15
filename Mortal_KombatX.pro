@@ -16,4 +16,5 @@ SOURCES += \
 HEADERS += \
     Animation.h \
     Global.h \
-    Player.h
+    Player.h \
+    SoundEffects.h

@@ -3,18 +3,19 @@
 #include"Global.h"
 #include"Animation.h"
 #include "Player.h"
+#include "SoundEffects.h"
 using namespace std;
 
 int main()
 {
     srand(time(NULL));
     window = new sf::RenderWindow(sf::VideoMode(800, 350), "Mortal Kombat 13+");
-    window->setFramerateLimit(60);
-    window->setVerticalSyncEnabled(true);
-    window->setKeyRepeatEnabled(false);
+    window->setFramerateLimit(60); //the window will use a small delay after each call to display() to ensure that the current frame lasted long enough to match the framerate limit
+    window->setVerticalSyncEnabled(true); //to avoid some visual artifacts
+    window->setKeyRepeatEnabled(false); //to get a single event when the key is pressed
 
     font = new Font();
-    if (!font->loadFromFile("assets/tahoma.ttf"))
+    if (!font->loadFromFile("tahoma.ttf"))
     {
         cout << " load font error\n";
     }
@@ -28,7 +29,7 @@ int main()
     koText.setString("K.O");
 
 
-    Animation backgroundAnimation("background", "assets/bg.png", Vector2i(799, 233), 3, 0.07f);
+    Animation backgroundAnimation("background", "bg.png", Vector2i(799, 233), 3, 0.07f);
     backgroundAnimation.setScale(Vector2f(1.0f, 1.5f));
 
     Player player(Vector2f(200, 180));
@@ -36,6 +37,10 @@ int main()
 
     player.setEnemy(&player2);
     player2.setEnemy(&player);
+
+    MSoundEffect startSound("round1.wav");
+    MSoundEffect koSound("fatality.wav");
+    startSound.play();
 
 
     sf::Clock deltaClock;
@@ -79,6 +84,7 @@ int main()
 
         if (!gameOver &&( player.getHealth() <= 0 || player2.getHealth() <= 0)) {
             gameOver = true;
+            koSound.play();
         }
 
         if (gameOver) {

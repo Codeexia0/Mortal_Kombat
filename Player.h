@@ -1,16 +1,16 @@
 #pragma once
 #include "Animation.h"
+#include "SoundEffects.h"
 #include<map>
 
 class Player {
-
     string currentAnimationId;
-    map<string, Animation*> animations;
+    map<string, Animation*> animations; //containers that store key-value pair elements in sorted form
 
-    Vector2f position;
+    Vector2f position; //(float x, float y)
     Vector2f velocity;
 
-    enum Action
+    enum Action //no typedef required
     {
         idle,
         walk,
@@ -33,6 +33,9 @@ class Player {
     RectangleShape* healthbarBG;
 
 
+    MSoundEffect* kickSound;
+    MSoundEffect* punchSound;
+
 public:
     Player(Vector2f position,bool isPlayer2 = false) {
         this->position = position;
@@ -40,15 +43,17 @@ public:
         action = Action::idle;
         this->isPlayer2 = isPlayer2;
 
+        kickSound = new MSoundEffect("kick.ogg");
+        punchSound = new MSoundEffect("punch.ogg");
 
 
         if (!isPlayer2) {
-            Animation* idle = new Animation("idle", "assets/subzero-idle.png", Vector2i(48, 111), 12, 0.05f);
-            Animation* walk = new Animation("walk", "assets/subzero-walk.png", Vector2i(64, 109), 9, 0.05f);
-            Animation* punch = new Animation("punch", "assets/subzero-punch1.png", Vector2i(80, 109), 3, 0.07f, false);
-            Animation* hit = new Animation("hit", "assets/subzero-hit.png", Vector2i(64, 111), 3, 0.07f, false);
-            Animation* kick = new Animation("kick", "assets/subzero-kick.png", Vector2i(80, 109), 4, 0.07f, false);
-            Animation* death = new Animation("death", "assets/subzero-death.png", Vector2i(80, 109), 6, 0.07f, false);
+            Animation* idle = new Animation("idle", "subzero-idle.png", Vector2i(48, 111), 12, 0.05f);
+            Animation* walk = new Animation("walk", "subzero-walk.png", Vector2i(64, 109), 9, 0.05f);
+            Animation* punch = new Animation("punch", "subzero-punch1.png", Vector2i(80, 109), 3, 0.07f, false);
+            Animation* hit = new Animation("hit", "subzero-hit.png", Vector2i(64, 111), 3, 0.07f, false);
+            Animation* kick = new Animation("kick", "subzero-kick.png", Vector2i(80, 109), 4, 0.07f, false);
+            Animation* death = new Animation("death", "subzero-death.png", Vector2i(80, 109), 6, 0.07f, false);
 
             idle->setScale(Vector2f(1.5, 1.5));
             walk->setScale(Vector2f(1.5, 1.5));
@@ -76,12 +81,12 @@ public:
 
         }
         else {
-            Animation* idle = new Animation("idle", "assets/sco-idle.png", Vector2i(64, 111), 7, 0.07f);
-            Animation* walk = new Animation("walk", "assets/sco-walk.png", Vector2i(64, 109), 9, 0.05f);
-            Animation* punch = new Animation("punch", "assets/sco-punch1.png", Vector2i(80, 109), 3, 0.07f, false);
-            Animation* hit = new Animation("hit", "assets/sco-hit.png", Vector2i(64, 111), 3, 0.07f, false);
-            Animation* kick = new Animation("kick", "assets/sco-kick.png", Vector2i(80, 109), 4, 0.07f, false);
-            Animation* death = new Animation("death", "assets/sco-death.png", Vector2i(80, 109), 6, 0.07f, false);
+            Animation* idle = new Animation("idle", "sco-idle.png", Vector2i(64, 111), 7, 0.07f);
+            Animation* walk = new Animation("walk", "sco-walk.png", Vector2i(64, 109), 9, 0.05f);
+            Animation* punch = new Animation("punch", "sco-punch1.png", Vector2i(80, 109), 3, 0.07f, false);
+            Animation* hit = new Animation("hit", "sco-hit.png", Vector2i(64, 111), 3, 0.07f, false);
+            Animation* kick = new Animation("kick", "sco-kick.png", Vector2i(80, 109), 4, 0.07f, false);
+            Animation* death = new Animation("death", "sco-death.png", Vector2i(80, 109), 6, 0.07f, false);
 
 
             idle->setScale(Vector2f(-1.5, 1.5));
@@ -373,12 +378,14 @@ public:
             if (resetHit) {
                 switch (fromAction)
                 {
-                    case Player::punch:
-                        health -= 2;
-                        break;
-                    case Player::kick:
-                        health -= 1;
-                        break;
+                case Player::punch:
+                    punchSound->play();
+                    health -= 2;
+                    break;
+                case Player::kick:
+                    kickSound->play();
+                    health -= 1;
+                    break;
                 }
             }
             healthbar->setSize(Vector2f(health * 10, 20));
