@@ -8,7 +8,7 @@ using namespace sf;
 
 class Animation {
 
-    string id;
+    string id; //name of the png
     Vector2i size;
     Texture texture;
     Sprite sprite;
@@ -23,7 +23,7 @@ public:
 
     Animation(string id,string filePath,Vector2i size,int maxFrame,float delayTime= 0.1f,bool loop = true) {
 
-        this->loop = loop;
+        this->loop = loop; //poin
         this->maxFrame = maxFrame;
         this->id = id;
         this->size = size;

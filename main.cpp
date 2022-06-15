@@ -13,19 +13,26 @@ int main()
     window->setVerticalSyncEnabled(true);
     window->setKeyRepeatEnabled(false);
 
-
-    sf::Font font;
-    if (!font.loadFromFile("tahoma.ttf"))
+    font = new Font();
+    if (!font->loadFromFile("assets/tahoma.ttf"))
     {
         cout << " load font error\n";
     }
 
+    bool gameOver = false;
+    Text koText;
+    koText.setFont(*font);
+    koText.setCharacterSize(60);
+    koText.setPosition(800/2-60, 80);
+    koText.setFillColor(Color::Red);
+    koText.setString("K.O");
 
-    Animation backgroundAnimation("background", "bg.png", Vector2i(799, 233), 3, 0.07f);
+
+    Animation backgroundAnimation("background", "assets/bg.png", Vector2i(799, 233), 3, 0.07f);
     backgroundAnimation.setScale(Vector2f(1.0f, 1.5f));
 
-    Player player(Vector2f(200, 230));
-    Player player2(Vector2f(600, 230),true);
+    Player player(Vector2f(200, 180));
+    Player player2(Vector2f(600, 180),true);
 
     player.setEnemy(&player2);
     player2.setEnemy(&player);
@@ -50,7 +57,7 @@ int main()
             }
             if (event.type == sf::Event::KeyReleased) {
                 player.onKeyRelease(event.key.code);
-                player2.onKeyPress(event.key.code);
+                player2.onKeyRelease(event.key.code);
             }
         }
 
@@ -70,6 +77,13 @@ int main()
         player.draw();
         player2.draw();
 
+        if (!gameOver &&( player.getHealth() <= 0 || player2.getHealth() <= 0)) {
+            gameOver = true;
+        }
+
+        if (gameOver) {
+            window->draw(koText);
+        }
 
         window->display();
     }
