@@ -48,6 +48,7 @@ public:
 
 
         if (!isPlayer2) { //if isPLayer is false
+            //"new"(smart pointers) are used to make sure that an object is deleted if it is no longer used (referenced)
             Animation* idle = new Animation("idle", "subzero-idle.png", Vector2i(48, 111), 12, 0.05f);//bool loop is true
             Animation* walk = new Animation("walk", "subzero-walk.png", Vector2i(64, 109), 9, 0.05f);
             Animation* punch = new Animation("punch", "subzero-punch1.png", Vector2i(80, 109), 3, 0.07f, false);
