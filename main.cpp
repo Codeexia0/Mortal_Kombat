@@ -35,7 +35,7 @@ int main()
     Player player(Vector2f(200, 180));
     Player player2(Vector2f(600, 180),true);
 
-    player.setEnemy(&player2);
+    player.setEnemy(&player2);//choosing oppenent for each other so they can hit each other and take damage
     player2.setEnemy(&player);
 
     MSoundEffect startSound("round1.wav");
@@ -57,7 +57,7 @@ int main()
             //If key is pressed
             if (event.type == sf::Event::KeyPressed)
             {
-                player.onKeyPress(event.key.code);
+                player.onKeyPress(event.key.code);//movement
                 player2.onKeyPress(event.key.code);
             }
             if (event.type == sf::Event::KeyReleased) {
@@ -71,11 +71,11 @@ int main()
         window->clear( sf::Color(77,77,77));
 
 
-        backgroundAnimation.play(deltaTime);
+        backgroundAnimation.play(deltaTime);//animating the background as well
         backgroundAnimation.draw();
 
 
-        player.update(deltaTime);
+        player.update(deltaTime); //status update
         player2.update(deltaTime);
 
 

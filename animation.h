@@ -7,13 +7,13 @@ using namespace std;
 using namespace sf;
 
 class Animation {
-
+private:
     string id;
     Vector2i size;
     Texture texture;
     Sprite sprite;
 
-    float playTime = 0;
+    float playTime = 0; //setting them to 0 so we dont get any garbage results while functioning
     float delayTime = 0;
     int currentFrame = 0;
     int maxFrame = 0;
@@ -23,7 +23,7 @@ public:
 
     Animation(string id,string filePath,Vector2i size,int maxFrame,float delayTime= 0.1f,bool loop = true) {
 
-        this->loop = loop;
+        this->loop = loop; //this-> is pointer used get access to the loop from private class(easier to acces)
         this->maxFrame = maxFrame;
         this->id = id;
         this->size = size;
@@ -67,7 +67,7 @@ public:
         return currentFrame;
     }
 
-    FloatRect getRect() {
+    FloatRect getRect() { //Construct the rectangle from its coordinates (for actions)
         FloatRect rect = sprite.getGlobalBounds();
         rect.left += 30;
         rect.top += 30;

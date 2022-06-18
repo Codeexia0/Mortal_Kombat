@@ -4,7 +4,7 @@
 
 class MSoundEffect {
 
-    sf::SoundBuffer buffer;
+    sf::SoundBuffer buffer;//This class encapsulates the audio data
     sf::Sound sound;
 
 public:
