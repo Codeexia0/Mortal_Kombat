@@ -237,7 +237,7 @@ public:
         float touchDistance = 160; //perfect touching distance for players when they come together
         if (!isPlayer2) {
             if (velocity.x > 0 && distance(position.x, position.y, enemy->getPos().x, enemy->getPos().y) >= touchDistance) { //for subzero checking the distance so they don't go over each other
-            }
+                position += velocity;}
             else if (velocity.x < 0) {
                 position += velocity;
                 if (position.x <= 10) {
